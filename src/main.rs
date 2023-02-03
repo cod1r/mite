@@ -1,6 +1,6 @@
-use iced::widget::{column, text_input, row, text};
-use iced::{executor, keyboard};
-use iced::{Alignment, Application, Command, Element, Settings, Subscription, Theme};
+use iced::widget::{column, container, row, text, text_input, Container};
+use iced::{executor, keyboard, Background};
+use iced::{Alignment, Application, Command, Element, Length, Settings, Subscription, Theme};
 use iced_native::Event;
 
 pub fn main() -> iced::Result {
@@ -9,7 +9,7 @@ pub fn main() -> iced::Result {
 
 struct ChatBox {
     value: String,
-    hist: Vec<String>
+    hist: Vec<String>,
 }
 
 #[derive(Debug, Clone)]
@@ -28,7 +28,7 @@ impl Application for ChatBox {
         (
             ChatBox {
                 value: "".to_string(),
-                hist: Vec::new()
+                hist: Vec::new(),
             },
             Command::none(),
         )
@@ -47,7 +47,7 @@ impl Application for ChatBox {
             Message::Ev(e) => {
                 match e {
                     Event::Keyboard(keyboard::Event::CharacterReceived(k)) => {
-                        if k as u8 == 13 {
+                        if k as u8 == 13 && self.value.len() > 0 {
                             self.hist.push(self.value.clone());
                         }
                     }
@@ -57,6 +57,7 @@ impl Application for ChatBox {
             }
         }
     }
+
     fn subscription(&self) -> Subscription<Message> {
         iced_native::subscription::events().map(Message::Ev)
     }
@@ -67,9 +68,16 @@ impl Application for ChatBox {
             hist_str += s;
             hist_str += "\n";
         }
-        column![text_input("", &self.value, Message::OnType), text(hist_str)]
+        Container::new(
+            column![
+                Container::new(text(hist_str)).height(Length::Fill),
+                column![text_input("", &self.value, Message::OnType)],
+            ]
             .padding(20)
-            .align_items(Alignment::Center)
-            .into()
+            .align_items(Alignment::Fill)
+        )
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .into()
     }
 }
