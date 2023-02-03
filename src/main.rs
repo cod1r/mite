@@ -1,5 +1,5 @@
-use iced::widget::{column, container, row, text, text_input, Container};
-use iced::{executor, keyboard, Background};
+use iced::widget::{column, text, text_input, Container, Scrollable};
+use iced::{executor, keyboard};
 use iced::{Alignment, Application, Command, Element, Length, Settings, Subscription, Theme};
 use iced_native::Event;
 
@@ -70,11 +70,11 @@ impl Application for ChatBox {
         }
         Container::new(
             column![
-                Container::new(text(hist_str)).height(Length::Fill),
+                Scrollable::new(text(hist_str)).height(Length::Fill),
                 column![text_input("", &self.value, Message::OnType)],
             ]
             .padding(20)
-            .align_items(Alignment::Fill)
+            .align_items(Alignment::Fill),
         )
         .width(Length::Fill)
         .height(Length::Fill)
