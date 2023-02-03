@@ -1,4 +1,4 @@
-use iced::widget::{column, text_input};
+use iced::widget::{column, text_input, row, text};
 use iced::{executor, keyboard};
 use iced::{Alignment, Application, Command, Element, Settings, Subscription, Theme};
 use iced_native::Event;
@@ -9,6 +9,7 @@ pub fn main() -> iced::Result {
 
 struct ChatBox {
     value: String,
+    hist: Vec<String>
 }
 
 #[derive(Debug, Clone)]
@@ -27,6 +28,7 @@ impl Application for ChatBox {
         (
             ChatBox {
                 value: "".to_string(),
+                hist: Vec::new()
             },
             Command::none(),
         )
@@ -46,7 +48,7 @@ impl Application for ChatBox {
                 match e {
                     Event::Keyboard(keyboard::Event::CharacterReceived(k)) => {
                         if k as u8 == 13 {
-                            println!("ENTER");
+                            self.hist.push(self.value.clone());
                         }
                     }
                     _ => {}
@@ -60,7 +62,12 @@ impl Application for ChatBox {
     }
 
     fn view(&self) -> Element<Message> {
-        column![text_input("", &self.value, Message::OnType),]
+        let mut hist_str = String::new();
+        for s in &self.hist {
+            hist_str += s;
+            hist_str += "\n";
+        }
+        column![text_input("", &self.value, Message::OnType), text(hist_str)]
             .padding(20)
             .align_items(Alignment::Center)
             .into()
