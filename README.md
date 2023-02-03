@@ -1,3 +1,3 @@
-# Mite is a lightweight chat application written in Rust
+# Mite - lightweight Chat application
 
 - current status is vaporware
