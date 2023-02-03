@@ -47,7 +47,7 @@ impl Application for ChatBox {
             Message::Ev(e) => {
                 match e {
                     Event::Keyboard(keyboard::Event::CharacterReceived(k)) => {
-                        if k as u8 == 13 && self.value.len() > 0 {
+                        if k as u8 == 13 && !self.value.is_empty() {
                             self.hist.push(self.value.clone());
                         }
                     }
